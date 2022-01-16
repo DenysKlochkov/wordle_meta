@@ -66,7 +66,7 @@ class DaisyChainTest
         given_secrets = @words.sample(@words.count * sampling_value)
         given_secrets = @words.sample(1) if given_secrets.empty?
       else
-        given_secrets = last_secret.sort_by{|z|-z.last.to_f}.collect(&:first).first(@words.count * sampling_value)
+        given_secrets = last_secret.sort_by{|z|-z.last.to_f}.collect(&:first).last(@words.count * sampling_value)
       end
 
       g = @model.calculate_words_metrics(given_secrets: given_secrets)
@@ -103,4 +103,4 @@ def sample_words(word_count = 1000)
 end
 
 DaisyChainTest.new(500)
-#todo: gnuplot visualisations
+#TODO: gnuplot visualisations

@@ -2,3 +2,4 @@ output
 debug
 post.txt
 .DS_Store
+Gemfile.lock
