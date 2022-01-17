@@ -85,22 +85,52 @@ end
 MAX_WORDS = 12595
 
 def run(word_count = 200, secret_sample = 0.1)
-  w = WordsReader.new(file: "../word_lists/words_#{word_count}.txt").read_words.words
+  w = WordsReader.new(file: adjust_file_path( "../word_lists/words_#{word_count}.txt")).read_words.words
   FileUtils.mkdir_p "../output/#{word_count}words"
-  g = GuessModel.new(words: w).calculate_words_metrics(secret_sample: secret_sample).dump_to_file(file: "../output/#{word_count}words/sample_#{secret_sample}.txt")
+  g = GuessModel.new(words: w).calculate_words_metrics(
+    secret_sample: secret_sample,
+    chunk_output: adjust_file_path( "../output/#{word_count}words/sample_#{secret_sample}")
+  )
 end
 
-
 def test_word(word, word_count = 200, secret_sample = 0.1)
-  w = WordsReader.new(file: "../word_lists/words_#{word_count}.txt").read_words.words
+  Matcher.reset
+  w = WordsReader.new(file: adjust_file_path( "../word_lists/words_#{word_count}.txt")).read_words.words
   g = GuessModel.new(words: w).test_word(word: word, secret_sample: secret_sample)
 end
 
 def sample_words(word_count = 1000)
   file_name = "../word_lists/words_#{word_count}.txt"
-  w = WordsReader.new(file: '../word_lists/words.txt').read_words(limit: word_count).dump_words(file: file_name)
+  w = WordsReader.new(file: adjust_file_path( '../word_lists/words.txt')).read_words(limit: word_count).dump_words(file: adjust_file_path(file_name))
   file_name
 end
 
-DaisyChainTest.new(500)
+def combine_words(word_count = 200, secret_sample = 0.1)
+  reader = MultipleStreamsReader.new(
+    file_names: [*0..11].collect{|i|adjust_file_path( "../output/#{word_count}words/sample_#{secret_sample}-#{i}") }
+  ).read_words
+  reader.dump_words(file: adjust_file_path( "../output/#{word_count}words/sample_#{secret_sample}-combined"))
+  reader.remove_words_from_file(file: adjust_file_path( "../word_lists/words_#{word_count}.txt"))
+  reader.clear_files
+end
+
+def sort_words(file: ,output:)
+  w = WordsReader.new(file: adjust_file_path( file)).tap do |w_r|
+    w_r.read_words
+    w_r.sort_by{|w| -w.split(" - ").last.to_f}
+    w_r.dump_words(file: adjust_file_path( output))
+  end
+end
+
+
+# DaisyChainTest.new(500)
 #TODO: gnuplot visualisations
+# p test_word(ARGV[0], MAX_WORDS, 1.0)
+
+# combine_words(MAX_WORDS, 1)
+# sort_words(
+#   file: "../output/12595words/sample_1-combined",
+#   output: "../output/12595words/sample_1-combined-sorted"
+# )
+
+# run(MAX_WORDS, 1)
