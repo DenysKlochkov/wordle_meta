@@ -23,7 +23,7 @@ class MatchObject
     letters1 = matcher.split('')
     letters2 = secret.split('')
     letters2_dump = letters2.dup
-    return {} unless letters1.count == letters2.count
+    raise "Mismatch error #{matcher}, #{secret}" unless letters1.count == letters2.count
 
     green = []
     yellow = []
@@ -63,15 +63,38 @@ class MatchObject
     g_letters = letters.values_at(*@green)
     y_letters = letters.values_at(*@yellow)
     b_letters = letters.values_at(*@black)
+
     non_green = @yellow + @black
+
     list.select do |o_word|
       other_letters = o_word.split('')
-      next unless (b_letters & other_letters).empty?
       next unless g_letters == other_letters.values_at(*@green)
       next unless (y_letters - (other_letters.values_at(*non_green))).empty?
 
+      other_letters = other_letters.exclude_once(g_letters).exclude_once(y_letters)
+      next unless (b_letters & other_letters).empty?
+      
       true
     end
+  end
+
+  def filter_list_count(list:)
+    letters = @state.collect(&:first)
+    g_letters = letters.values_at(*@green)
+    y_letters = letters.values_at(*@yellow)
+    b_letters = letters.values_at(*@black)
+    non_green = @yellow + @black
+
+    list.select do |o_word|
+      other_letters = o_word.split('')
+      next unless g_letters == other_letters.values_at(*@green)
+      next unless (y_letters - (other_letters.values_at(*non_green))).empty?
+
+      other_letters = other_letters.exclude_once(g_letters).exclude_once(y_letters)
+      next unless (b_letters & other_letters).empty?
+
+      true
+    end.count
   end
 
   def get_filter_signature

@@ -84,11 +84,15 @@ end
 
 MAX_WORDS = 12595
 
-def run(word_count = 200, secret_sample = 0.1)
+def run_final(word_count = 200, secret_sample = 0.1)
+  Matcher.reset
   w = WordsReader.new(file: adjust_file_path( "../word_lists/words_#{word_count}.txt")).read_words.words
+  secrets = WordsReader.new(file: adjust_file_path( "../word_lists/words_#{word_count}.backup.txt")).read_words.words
   FileUtils.mkdir_p "../output/#{word_count}words"
   g = GuessModel.new(words: w).calculate_words_metrics(
     secret_sample: secret_sample,
+    given_secrets: secrets,
+    use_secrets: true,
     chunk_output: adjust_file_path( "../output/#{word_count}words/sample_#{secret_sample}")
   )
 end
@@ -97,6 +101,10 @@ def test_word(word, word_count = 200, secret_sample = 0.1)
   Matcher.reset
   w = WordsReader.new(file: adjust_file_path( "../word_lists/words_#{word_count}.txt")).read_words.words
   g = GuessModel.new(words: w).test_word(word: word, secret_sample: secret_sample)
+end
+
+def compare_words
+
 end
 
 def sample_words(word_count = 1000)
@@ -133,4 +141,13 @@ end
 #   output: "../output/12595words/sample_1-combined-sorted"
 # )
 
-# run(MAX_WORDS, 1)
+if ARGV[0]=="run"
+  run_final(MAX_WORDS, 1.0)
+elsif ARGV[0]=="sort"
+  sort_words(
+    file: "../output/#{MAX_WORDS}words/sample_1.0-combined",
+    output: "../output/#{MAX_WORDS}words/sample_1.0-combined-sorted"
+  )
+else
+  combine_words(MAX_WORDS, 1.0)
+end

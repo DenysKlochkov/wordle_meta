@@ -52,6 +52,14 @@ class Tests < Test::Unit::TestCase
     )
     assert_equal(filtered2.sort, ["puppy", "ruppy", "pupty"].sort)
 
+    m3 = MatchObject.build(matcher:"poppy", secret:"ruppy")
 
+    filtered3 = m3.filter_list(
+      list: [
+        "ruppy",
+        "puppy",
+      ]
+    )
+    assert_equal(filtered3.sort, ["ruppy"].sort)
   end
 end

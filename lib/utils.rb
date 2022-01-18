@@ -2,6 +2,16 @@ class Array
   def tally
     reduce({}){|a,b| a[b] ||= 0; a[b]+=1; a}
   end
+
+  def exclude_once(other)
+    d = self.dup
+    other.each do |el|
+      
+      found_ind = d.index(el)
+      d.delete_at(found_ind) if found_ind
+    end
+    d
+  end
 end
 
 class WordsReader
@@ -64,7 +74,7 @@ class MultipleStreamsReader
       stream = f.read
       f.close()
       words =  stream.split(delim)
-      words
+      words = words.select{|w| w.length > 0}
       
     end.flatten(1)
 
@@ -82,7 +92,7 @@ class MultipleStreamsReader
     source =  given_words || @words 
     return false unless source
 
-    File.open(file, new_file ? 'w+' : 'a+').write("\n"+source.join(delim))
+    File.open(file, new_file ? 'w+' : 'a+').write(source.join(delim)+delim)
   end
 
   def remove_words_from_file(file:, delim: "\n")
