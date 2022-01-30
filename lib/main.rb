@@ -98,8 +98,7 @@ def run_final(word_count = 200, secret_sample = 0.1)
 end
 
 def test_word(word, word_count = 200, secret_sample = 0.1)
-  Matcher.reset
-  w = WordsReader.new(file: adjust_file_path( "../word_lists/words_#{word_count}.txt")).read_words.words
+  w = WordsReader.new(file: adjust_file_path( "../word_lists/words_#{word_count}.backup.txt")).read_words.words
   g = GuessModel.new(words: w).test_word(word: word, secret_sample: secret_sample)
 end
 
@@ -131,15 +130,6 @@ def sort_words(file: ,output:)
 end
 
 
-# DaisyChainTest.new(500)
-#TODO: gnuplot visualisations
-# p test_word(ARGV[0], MAX_WORDS, 1.0)
-
-# combine_words(MAX_WORDS, 1)
-# sort_words(
-#   file: "../output/12595words/sample_1-combined",
-#   output: "../output/12595words/sample_1-combined-sorted"
-# )
 
 if ARGV[0]=="run"
   run_final(MAX_WORDS, 1.0)
@@ -148,6 +138,13 @@ elsif ARGV[0]=="sort"
     file: "../output/#{MAX_WORDS}words/sample_1.0-combined",
     output: "../output/#{MAX_WORDS}words/sample_1.0-combined-sorted"
   )
-else
+elsif ARGV[0]=="test" && ARGV[1]
+  Matcher.reset
+  ARGV[1..].each do |word|
+    p test_word(
+      word, MAX_WORDS, 1.0 
+    )
+  end
+elsif ARGV[0]=="cleanup"
   combine_words(MAX_WORDS, 1.0)
 end

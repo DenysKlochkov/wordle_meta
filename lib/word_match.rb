@@ -40,6 +40,7 @@ class MatchObject
       next if green.include?(ind)
       if letters2_dump.include?(letter)
         yellow << ind
+        letters2_dump.delete_at(letters2_dump.index(letter))
       else
         black << ind
       end
@@ -98,7 +99,8 @@ class MatchObject
   end
 
   def get_filter_signature
-    "#{@state.sort_by(&:first)}"
+    # "#{@state.sort_by(&:first)}"
+    "#{@state}"
   end
 
   def values

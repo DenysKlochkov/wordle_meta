@@ -111,20 +111,7 @@ class Matcher
   end
 
   def self.match(matcher:, secret:)
-    # key = hash_key(matcher, secret)
-    # if @@dp[key]
-    #   return MatchObject.new(
-    #     word: matcher,
-    #     green: @@dp[key][0],
-    #     yellow: @@dp[key][1],
-    #     black: @@dp[key][2]
-    #   )
-    # end
-
-    m = MatchObject.build(matcher: matcher, secret: secret)
-    # @@dp[key] = m.values
-
-    m
+    MatchObject.build(matcher: matcher, secret: secret)
   end
 
   def self.filter_words_slow(match_object:, list:)
@@ -136,7 +123,7 @@ class Matcher
   end
 
 
-  def self.calculate_entropy_metric_slow(matcher:, list:, secrets: ,remember_counts: false)
+  def self.calculate_entropy_metric_slow(matcher:, list:, secrets: , remember_counts: false)
     words_count = list.count
     secret_count = secrets.count
     entropy_metric = 0.0
@@ -148,10 +135,12 @@ class Matcher
       if @@dp_filter_count[signature]
         filtered_words_count = @@dp_filter_count[signature]
       else
-        @@dp_filter_count[signature] = filtered_words_count = filter_words_slow_count(
+        filtered_words_count = filter_words_slow_count(
           match_object: m,
           list: list
         )
+        @@dp_filter_count[signature] = filtered_words_count
+
       end
 
       if remember_counts
