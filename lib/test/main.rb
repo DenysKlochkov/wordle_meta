@@ -21,10 +21,15 @@ class Tests < Test::Unit::TestCase
     #yellow letter
     m4 = MatchObject.build(matcher:"yumms", secret:"dummy")
     assert_equal(m4.values, [[1,2,3],[0],[4]])
-
+    
+    #yellow letters
+    m5 = MatchObject.build(matcher:"apple", secret:"soapy")
+    assert_equal(m5.values, [[],[0,1],[2,3,4]])
+    
     #yellow and green letters
-    m5 = MatchObject.build(matcher:"apple", secret:"puppy")
-    assert_equal(m5.values, [[2],[1],[0,3,4]])
+    m6 = MatchObject.build(matcher:"apple", secret:"puppy")
+    assert_equal(m6.values, [[2],[1],[0,3,4]])
+    
   end
 
   def test_filtering
