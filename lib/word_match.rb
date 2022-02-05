@@ -72,7 +72,7 @@ class MatchObject
       next unless g_letters == other_letters.values_at(*@green)
       next unless (y_letters - (other_letters.values_at(*non_green))).empty?
 
-      other_letters = other_letters.exclude_once(g_letters).exclude_once(y_letters)
+      other_letters = other_letters.exclude_once(g_letters + y_letters)
       next unless (b_letters & other_letters).empty?
       
       true
@@ -91,7 +91,7 @@ class MatchObject
       next unless g_letters == other_letters.values_at(*@green)
       next unless (y_letters - (other_letters.values_at(*non_green))).empty?
 
-      other_letters = other_letters.exclude_once(g_letters).exclude_once(y_letters)
+      other_letters = other_letters.exclude_once(g_letters + y_letters)
       next unless (b_letters & other_letters).empty?
 
       true

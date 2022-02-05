@@ -26,10 +26,14 @@ class Tests < Test::Unit::TestCase
     m5 = MatchObject.build(matcher:"apple", secret:"soapy")
     assert_equal(m5.values, [[],[0,1],[2,3,4]])
     
-    #yellow and green letters
+    #yellow and green letters 1
     m6 = MatchObject.build(matcher:"apple", secret:"puppy")
     assert_equal(m6.values, [[2],[1],[0,3,4]])
-    
+
+    #yellow and green letters 2
+    m7 = MatchObject.build(matcher:"aabbc", secret:"bbbca")
+    assert_equal(m7.values, [[2],[0,3,4],[1]])
+
   end
 
   def test_filtering
@@ -66,5 +70,23 @@ class Tests < Test::Unit::TestCase
       ]
     )
     assert_equal(filtered3.sort, ["ruppy"].sort)
+
+    m4 = MatchObject.build(matcher:"aabbc", secret:"bbbca")
+
+    filtered4 = m4.filter_list(
+      list: [
+        "aabbc", # not pass - two a's
+        "bbbca", # pass
+        "babca", # not pass - two a's
+        "baaca", # not pass - two a's
+        "bbbcc", # not pass - zero a's
+        "abbbc", # pass
+        "zbbac", # pass
+        "bbzac"  # not pass - no b at position 2
+      ]
+    )
+    # at least 2 b's, one a, and c
+    assert_equal(filtered4.sort, ["bbbca", "abbbc", "zbbac"].sort)
+
   end
 end

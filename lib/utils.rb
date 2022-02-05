@@ -6,7 +6,6 @@ class Array
   def exclude_once(other)
     d = self.dup
     other.each do |el|
-      
       found_ind = d.index(el)
       d.delete_at(found_ind) if found_ind
     end

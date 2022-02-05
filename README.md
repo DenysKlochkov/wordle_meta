@@ -26,7 +26,7 @@ The average entropy decrease is thus
 
 # Algorithm complexity
 
-For each word out of the set, we iterate through all the secret words to determine a Match Object O(n^2). Given the Match Object, we count words in the list that conform it O(n). The final theoretical complexity comes to be O(n^3), given the constant cost of word matching & deciding whether a word conforms to the Match Object.
+For each word out of the set, we iterate through all the secret words to determine a Match Object O(n^2). Given the Match Object, we count words in the list that conform to it O(n). The final theoretical complexity comes to be O(n^3), given the constant cost of word matching & deciding whether a word conforms to the Match Object.
 
 # Improvements
 
@@ -38,13 +38,13 @@ Using those improvement the effective exponent of around n^2.7 was achieved for 
 
 ## Heuristic algorithms
 
-Another approach would be to under-sample the secrets that we test against instead of testing every possible word, - by utilizing certain heuristic algorithm. The following hypothesis come to mind:
+Another approach would be to under-sample the secrets that we test against instead of testing every possible word, - by utilizing certain heuristic algorithm. The following twoo hypotheses will be investigated:
   
   - By doing a cursory evaluation of the set using a very few (~1%) secrets first, and then using a larger set of different secrets chosen on the basis of this initial evaluation ( either only the "best" words, the "worst" ones, or a strict combination of those ), it is possible to achieve statistically better* results compared to random sampling of the equivalent quantity of secrets.
 
   - By starting with the small subset of secrets and updating the secret list "on the go" (which might involve re-evaluating the same word multiple times with different sets of secrets), based on the metrics of current evaluation, it is possible to achieve statistically better* results compared to random sampling of the equivalent quantity of secrets.
 
-The quality of the under-sampling is determined by normalizing the set of metrics using the full-sampling values for each word, and then calculating the statistical metrics of the resulting set ( want mean and average as close to 1 as possible, and variation as small as possible). Due to randomness, this trial needs to be performed multiple times, preferably with different under-sampling percentages. 
+The quality of the under-sampling is determined by normalizing the set of results using the corresponding full-sampling values for each word, and then calculating the statistical metrics of the resulting set ( want mean and average as close to 1 as possible, and variation as small as possible). Due to randomness, this trial needs to be performed multiple times, preferably with different under-sampling percentages. 
 For example:
 
     -- The full-sampled set results: [["abc", 2.5], ["cde", 3], ["efg", 2.75]]
