@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MatchObject
   attr_reader :state
 
@@ -20,10 +22,11 @@ class MatchObject
   end
 
   def self.build(matcher: , secret:)
+    raise "Mismatch error #{matcher}, #{secret}" unless matcher.length == secret.length
+    
     letters1 = matcher.split('')
     letters2 = secret.split('')
     letters2_dump = letters2.dup
-    raise "Mismatch error #{matcher}, #{secret}" unless letters1.count == letters2.count
 
     green = []
     yellow = []
@@ -38,6 +41,7 @@ class MatchObject
 
     letters1.each.with_index do |letter, ind|
       next if green.include?(ind)
+
       if letters2_dump.include?(letter)
         yellow << ind
         letters2_dump.delete_at(letters2_dump.index(letter))
@@ -98,9 +102,8 @@ class MatchObject
     end.count
   end
 
-  def get_filter_signature
-    # "#{@state.sort_by(&:first)}"
-    "#{@state}"
+  def filter_signature
+    @state.to_s
   end
 
   def values
@@ -112,11 +115,9 @@ class MatchObject
   end
 
   def to_s
-    print
-  end
-
-  def print
     puts "Word :     #{@state.collect(&:first).join('|')}"
     puts "Matches :  #{@state.collect(&:last).join('|')}"
   end
+
+  alias_method :print, :to_s
 end
