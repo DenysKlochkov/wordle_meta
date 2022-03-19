@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class MatchObject
   attr_reader :state
 
@@ -23,22 +21,21 @@ class MatchObject
 
   def self.build(matcher: , secret:)
     raise "Mismatch error #{matcher}, #{secret}" unless matcher.length == secret.length
-    
+
     letters1 = matcher.split('')
     letters2 = secret.split('')
     letters2_dump = letters2.dup
-
     green = []
     yellow = []
     black = []
 
+    # two passes is neccessary due to logic of yellow letters
     letters1.each.with_index do |letter, ind|
       if letters2[ind] == letter
         green << ind
         letters2_dump.delete_at(letters2_dump.index(letter))
       end
     end
-
     letters1.each.with_index do |letter, ind|
       next if green.include?(ind)
 
@@ -56,7 +53,6 @@ class MatchObject
       yellow: yellow,
       black: black
     )
-
   end
 
   def ==(other)
@@ -74,11 +70,11 @@ class MatchObject
     list.select do |o_word|
       other_letters = o_word.split('')
       next unless g_letters == other_letters.values_at(*@green)
-      next unless (y_letters - (other_letters.values_at(*non_green))).empty?
+      next unless (y_letters - other_letters.values_at(*non_green)).empty?
 
       other_letters = other_letters.exclude_once(g_letters + y_letters)
       next unless (b_letters & other_letters).empty?
-      
+
       true
     end
   end
@@ -93,7 +89,7 @@ class MatchObject
     list.select do |o_word|
       other_letters = o_word.split('')
       next unless g_letters == other_letters.values_at(*@green)
-      next unless (y_letters - (other_letters.values_at(*non_green))).empty?
+      next unless (y_letters - other_letters.values_at(*non_green)).empty?
 
       other_letters = other_letters.exclude_once(g_letters + y_letters)
       next unless (b_letters & other_letters).empty?
@@ -119,5 +115,5 @@ class MatchObject
     puts "Matches :  #{@state.collect(&:last).join('|')}"
   end
 
-  alias_method :print, :to_s
+  alias print to_s
 end

@@ -28,7 +28,7 @@ class GuessModel
     word_list = use_secrets ? secrets : @words
     @entropy_table = Parallel.map(@words.each_slice(words_per_process)) do |words_chunk|
       f = File.open([chunk_output, Parallel.worker_number].join('-'), 'w+') if chunk_output
-      words_chunk.collect do |words_per_process|
+      words_chunk.collect do |word|
         e = Matcher.calculate_entropy_metric_slow(matcher: word, list: word_list, secrets:)
         if chunk_output
           f = File.open([chunk_output, Parallel.worker_number].join('-'), 'a+')
@@ -113,7 +113,7 @@ class Matcher
     
     secrets.each do |secret|
       m = match(matcher:, secret:)
-      signature = m.get_filter_signature
+      signature = m.filter_signature
 
       if @@dp_filter_count[signature]
         filtered_words_count = @@dp_filter_count[signature]
